@@ -28,13 +28,14 @@
 .noMapInner {
   text-align: center;
   animation: fadeIn 0.4s ease;
+  padding: 24px;
 }
 
 .radarAnim {
-  width: 160px;
-  height: 160px;
+  width: 120px;
+  height: 120px;
   position: relative;
-  margin: 0 auto 32px;
+  margin: 0 auto 24px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -51,23 +52,24 @@
 }
 
 .radarCenter {
-  font-size: 40px;
+  font-size: 36px;
   color: var(--accent);
   animation: glow 2s ease-in-out infinite;
   z-index: 1;
 }
 
 .noMapInner h2 {
-  font-size: 28px;
+  font-size: 22px;
   font-weight: 800;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .noMapInner p {
   color: var(--text2);
-  max-width: 300px;
+  max-width: 280px;
   line-height: 1.6;
   margin: 0 auto;
+  font-size: 14px;
 }
 
 .locationError {
@@ -78,34 +80,77 @@
   border-radius: 10px;
   font-size: 13px;
   margin-top: 12px;
-  max-width: 340px;
+  max-width: 300px;
 }
 
 .mapControls {
   position: absolute;
-  bottom: 24px;
+  bottom: 16px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
   display: flex;
-  gap: 10px;
+  gap: 8px;
   background: rgba(10,10,15,0.85);
   backdrop-filter: blur(12px);
-  padding: 10px;
+  padding: 8px;
   border-radius: 14px;
   border: 1px solid var(--border);
+  white-space: nowrap;
 }
 
 .toggleListBtn {
   font-size: 12px !important;
 }
 
+/* Desktop sidebar */
 .sidePanel {
-  width: 320px;
+  width: 300px;
   background: var(--bg2);
   border-left: 1px solid var(--border);
   overflow-y: auto;
   flex-shrink: 0;
+}
+
+/* Mobile: sidebar becomes bottom sheet */
+@media (max-width: 640px) {
+  .page {
+    flex-direction: column;
+  }
+
+  .mapWrapper {
+    flex: 1;
+    min-height: 0;
+  }
+
+  .sidePanel {
+    width: 100%;
+    height: 220px;
+    border-left: none;
+    border-top: 1px solid var(--border);
+    overflow-y: auto;
+    flex-shrink: 0;
+  }
+
+  .mapControls {
+    bottom: 230px;
+    padding: 6px 8px;
+    gap: 6px;
+  }
+
+  .noMapInner h2 {
+    font-size: 18px;
+  }
+
+  .radarAnim {
+    width: 90px;
+    height: 90px;
+    margin-bottom: 16px;
+  }
+
+  .radarCenter {
+    font-size: 28px;
+  }
 }
 
 .popup {
@@ -116,23 +161,23 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  min-width: 140px;
+  min-width: 130px;
 }
 
 .popupContent strong {
   font-weight: 800;
   color: #111;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .popupContent span {
-  font-size: 12px;
+  font-size: 11px;
   color: #555;
 }
 
 .chatBtn {
   margin-top: 8px !important;
-  padding: 8px 14px !important;
+  padding: 7px 12px !important;
   font-size: 12px !important;
 }
 
