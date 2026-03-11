@@ -10,9 +10,16 @@ dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
+
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://find-people-mu.vercel.app',
+  process.env.CLIENT_URL,
+].filter(Boolean);
+
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: allowedOrigins,
     methods: ['GET', 'POST'],
     credentials: true,
   },
@@ -20,7 +27,13 @@ const io = new Server(server, {
 
 // Middleware
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
 }));
 app.use(express.json());
@@ -30,13 +43,13 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const messageRoutes = require('./routes/messages');
+const adminRoutes = require('./routes/admin');
+const groupRoutes = require('./routes/groups');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/messages', messageRoutes);
-const adminRoutes = require('./routes/admin');
 app.use('/api/admin', adminRoutes);
-const groupRoutes = require('./routes/groups');
 app.use('/api/groups', groupRoutes);
 
 app.get('/api/health', (req, res) => res.json({ status: 'OK', message: 'FindPeople API running' }));
@@ -47,12 +60,11 @@ mongoose.connect(process.env.MONGODB_URI)
   .catch(err => console.error('❌ MongoDB connection error:', err));
 
 // Socket.io - Real-time location & chat
-const activeUsers = new Map(); // socketId -> { userId, location, username, avatar, anonymous }
+const activeUsers = new Map();
 
 io.on('connection', (socket) => {
   console.log(`🔌 Socket connected: ${socket.id}`);
 
-  // User joins with their info
   socket.on('user:join', (userData) => {
     activeUsers.set(socket.id, {
       ...userData,
@@ -62,7 +74,6 @@ io.on('connection', (socket) => {
     console.log(`👤 User joined: ${userData.username || 'Anonymous'}`);
   });
 
-  // Update user location
   socket.on('location:update', (locationData) => {
     const user = activeUsers.get(socket.id);
     if (user) {
@@ -70,11 +81,9 @@ io.on('connection', (socket) => {
       user.lastSeen = new Date();
       activeUsers.set(socket.id, user);
 
-      // Find nearby users within 500 meters
       const nearbyUsers = getNearbyUsers(socket.id, locationData, 500);
       socket.emit('nearby:users', nearbyUsers);
 
-      // Also notify all nearby users
       nearbyUsers.forEach(nearUser => {
         const nearSocket = io.sockets.sockets.get(nearUser.socketId);
         if (nearSocket) {
@@ -85,11 +94,9 @@ io.on('connection', (socket) => {
     }
   });
 
-  // Private message
   socket.on('message:send', (messageData) => {
     const { toSocketId, toUserId, message, fromUser } = messageData;
-    
-    // Find receiver's socket
+
     let receiverSocketId = toSocketId;
     if (!receiverSocketId) {
       for (const [sid, u] of activeUsers.entries()) {
@@ -113,7 +120,6 @@ io.on('connection', (socket) => {
     socket.emit('message:sent', msgPayload);
   });
 
-  // Typing indicator
   socket.on('typing:start', ({ toSocketId }) => {
     const user = activeUsers.get(socket.id);
     if (toSocketId && user) {
@@ -128,7 +134,6 @@ io.on('connection', (socket) => {
     }
   });
 
-  // Disconnect
   socket.on('disconnect', () => {
     const user = activeUsers.get(socket.id);
     if (user) {
@@ -138,9 +143,8 @@ io.on('connection', (socket) => {
   });
 });
 
-// Calculate distance between two coordinates (Haversine formula)
 function calculateDistance(lat1, lon1, lat2, lon2) {
-  const R = 6371000; // Earth radius in meters
+  const R = 6371000;
   const dLat = (lat2 - lat1) * Math.PI / 180;
   const dLon = (lon2 - lon1) * Math.PI / 180;
   const a =
@@ -151,7 +155,6 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
   return R * c;
 }
 
-// Get nearby users within radius meters
 function getNearbyUsers(excludeSocketId, location, radius) {
   const nearby = [];
   for (const [socketId, user] of activeUsers.entries()) {
@@ -164,10 +167,7 @@ function getNearbyUsers(excludeSocketId, location, radius) {
     );
 
     if (distance <= radius) {
-      nearby.push({
-        ...user,
-        distance: Math.round(distance),
-      });
+      nearby.push({ ...user, distance: Math.round(distance) });
     }
   }
   return nearby.sort((a, b) => a.distance - b.distance);
