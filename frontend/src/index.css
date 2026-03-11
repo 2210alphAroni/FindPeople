@@ -1,0 +1,59 @@
+@import 'leaflet/dist/leaflet.css';
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root, [data-theme="dark"] {
+  --bg: #0a0a0f; --bg2: #111118; --bg3: #1a1a24;
+  --border: #2a2a3a; --accent: #00ff88; --accent2: #7c3aed;
+  --accent3: #ff6b35; --text: #e8e8f0; --text2: #8888aa;
+  --radius: 12px; --map-filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(1.1) saturate(0.6);
+}
+
+[data-theme="light"] {
+  --bg: #f0f2f8; --bg2: #ffffff; --bg3: #f5f6fa;
+  --border: #dde1ee; --accent: #00aa55; --accent2: #6d28d9;
+  --accent3: #e05a20; --text: #111122; --text2: #555577;
+  --map-filter: none;
+}
+
+body {
+  font-family: 'Syne', sans-serif;
+  background: var(--bg); color: var(--text);
+  min-height: 100vh; overflow-x: hidden;
+  transition: background 0.3s, color 0.3s;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent2); }
+
+.leaflet-container { background: var(--bg) !important; font-family: 'Syne', sans-serif; }
+.leaflet-tile { filter: var(--map-filter); }
+.leaflet-control-attribution { display: none; }
+.leaflet-control-zoom a { background: var(--bg3) !important; color: var(--text) !important; border-color: var(--border) !important; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+@keyframes ping { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(2.5); opacity: 0; } }
+@keyframes glow { 0%, 100% { box-shadow: 0 0 8px var(--accent); } 50% { box-shadow: 0 0 20px var(--accent), 0 0 40px var(--accent); } }
+@keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+
+input, textarea {
+  font-family: 'Syne', sans-serif; background: var(--bg3);
+  border: 1px solid var(--border); color: var(--text);
+  border-radius: var(--radius); padding: 12px 16px; font-size: 14px;
+  transition: border-color 0.2s, box-shadow 0.2s; outline: none; width: 100%;
+}
+input:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(0,200,100,0.15); }
+input::placeholder, textarea::placeholder { color: var(--text2); }
+input:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn { font-family: 'Syne', sans-serif; font-weight: 700; border: none; border-radius: var(--radius); cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.btn-primary { background: var(--accent); color: #000; padding: 12px 24px; font-size: 14px; }
+.btn-primary:hover { filter: brightness(0.9); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,200,100,0.3); }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.btn-ghost { background: transparent; color: var(--text2); border: 1px solid var(--border); padding: 10px 20px; }
+.btn-ghost:hover { color: var(--text); border-color: var(--accent); }
+.btn-danger { background: #ff4444; color: white; padding: 10px 20px; }
+.btn-danger:hover { background: #cc2222; }
