@@ -106,7 +106,7 @@ export default function MapPage() {
           <MapContainer center={[myPosition.lat, myPosition.lng]} zoom={16} className={styles.map}>
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="© OpenStreetMap" />
             <MapController position={myPosition} />
-            <Circle center={[myPosition.lat, myPosition.lng]} radius={10000}
+            <Circle center={[myPosition.lat, myPosition.lng]} radius={500}
               pathOptions={{ color: '#00ff88', fillColor: '#00ff88', fillOpacity: 0.05, weight: 1.5, dashArray: '6 4' }} />
             <Marker position={[myPosition.lat, myPosition.lng]} icon={myIcon}>
               <Popup><div className={styles.popupContent}><strong>You</strong><span>{user?.isAnonymous ? '🎭 Anonymous' : `@${user?.username}`}</span></div></Popup>
@@ -133,7 +133,7 @@ export default function MapPage() {
                 <div className={styles.radarCenter}>◉</div>
               </div>
               <h2>Start Scanning</h2>
-              <p>Share your location to see who's nearby within 10000 Kilometers</p>
+              <p>Share your location to see who's nearby within 500 meters</p>
               {locationError && <div className={styles.locationError}>{locationError}</div>}
               <button className="btn btn-primary" onClick={startTracking} style={{ marginTop: '16px', padding: '14px 32px', fontSize: '16px' }}>
                 📍 Share My Location

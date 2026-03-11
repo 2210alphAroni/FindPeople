@@ -81,13 +81,13 @@ io.on('connection', (socket) => {
       user.lastSeen = new Date();
       activeUsers.set(socket.id, user);
 
-      const nearbyUsers = getNearbyUsers(socket.id, locationData, 10000);
+      const nearbyUsers = getNearbyUsers(socket.id, locationData, 500);
       socket.emit('nearby:users', nearbyUsers);
 
       nearbyUsers.forEach(nearUser => {
         const nearSocket = io.sockets.sockets.get(nearUser.socketId);
         if (nearSocket) {
-          const theirNearby = getNearbyUsers(nearUser.socketId, nearUser.location, 10000);
+          const theirNearby = getNearbyUsers(nearUser.socketId, nearUser.location, 500);
           nearSocket.emit('nearby:users', theirNearby);
         }
       });
