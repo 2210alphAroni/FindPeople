@@ -21,14 +21,16 @@ export default function Layout({ children }) {
         <div className={styles.navLeft}>
           <Link to="/" className={styles.brand}>
             <span className={styles.brandIcon}>◉</span>
-            <span>FindPeople</span>
+            <span className={styles.brandText}>FindPeople</span>
           </Link>
         </div>
 
         <div className={styles.navCenter}>
           <div className={styles.status}>
-            <span className={`${styles.dot} ${isConnected ? styles.online : styles.offline}`} />
-            <span>{isConnected ? 'Connected' : 'Offline'}</span>
+            <span
+              className={`${styles.dot} ${isConnected ? styles.online : styles.offline}`}
+            />
+            <span>{isConnected ? "Connected" : "Offline"}</span>
           </div>
           {isConnected && nearbyUsers.length > 0 && (
             <div className={styles.nearby}>
@@ -40,32 +42,56 @@ export default function Layout({ children }) {
 
         <div className={styles.navRight}>
           {/* Theme toggle */}
-          <button className={styles.themeBtn} onClick={toggleTheme} title="Toggle theme">
-            {theme === 'dark' ? '☀️' : '🌙'}
+          <button
+            className={styles.themeBtn}
+            onClick={toggleTheme}
+            title="Toggle theme"
+          >
+            {theme === "dark" ? "☀️" : "🌙"}
           </button>
 
-          <Link to="/profile" className={`${styles.navBtn} ${location.pathname === '/profile' ? styles.navActive : ''}`}>
+          <Link
+            to="/profile"
+            className={`${styles.navBtn} ${location.pathname === "/profile" ? styles.navActive : ""}`}
+          >
             {user?.avatar ? (
-              <img src={user.avatar} alt={user.username} className={styles.navAvatar} />
+              <img
+                src={user.avatar}
+                alt={user.username}
+                className={styles.navAvatar}
+              />
             ) : (
-              <div className={styles.navAvatarFallback}>{user?.username?.[0]?.toUpperCase()}</div>
+              <div className={styles.navAvatarFallback}>
+                {user?.username?.[0]?.toUpperCase()}
+              </div>
             )}
             <span className={styles.navUsername}>
-              {user?.isAnonymous ? '👤 Anonymous' : user?.username}
+              {user?.isAnonymous ? "👤 Anonymous" : user?.username}
             </span>
           </Link>
 
-          <Link to="/groups" className={`${styles.navBtn} ${location.pathname === '/groups' ? styles.navActive : ''}`}>
+          <Link
+            to="/groups"
+            className={`${styles.navBtn} ${location.pathname === "/groups" ? styles.navActive : ""}`}
+          >
             💬 Groups
           </Link>
 
-          {user?.role === 'admin' && (
-            <Link to="/admin" className={`${styles.navBtn} ${location.pathname === '/admin' ? styles.navActive : ''}`}>
+          {user?.role === "admin" && (
+            <Link
+              to="/admin"
+              className={`${styles.navBtn} ${location.pathname === "/admin" ? styles.navActive : ""}`}
+            >
               🛡️ Admin
             </Link>
           )}
 
-          <button onClick={handleLogout} className={`btn btn-ghost ${styles.logoutBtn}`}>Logout</button>
+          <button
+            onClick={handleLogout}
+            className={`btn btn-ghost ${styles.logoutBtn}`}
+          >
+            Logout
+          </button>
         </div>
       </nav>
 
