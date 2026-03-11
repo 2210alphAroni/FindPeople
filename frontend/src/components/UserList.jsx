@@ -12,7 +12,7 @@ export default function UserList({ nearbyUsers, onChatClick }) {
         <div className={styles.empty}>
           <div className={styles.emptyIcon}>🔍</div>
           <p>No one nearby yet</p>
-          <span>People within 500m will appear here</span>
+          <span>People within 10km will appear here</span>
         </div>
       ) : (
         <div className={styles.list}>
